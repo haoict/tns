@@ -1,0 +1,30 @@
+# Javascript Node CircleCI 2.0 configuration file
+version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker build . -t haoict/tns:${CIRCLE_BRANCH}
+      - run: docker push haoict/tns:${CIRCLE_BRANCH}
+
+  deploy:
+    machine: true
+    steps:
+      - run: ssh $SSH_USER@$SSH_HOST "docker kill tns; docker rm tns; docker pull haoict/tns:${CIRCLE_BRANCH}"
+      - run: ssh $SSH_USER@$SSH_HOST "docker run --name tns -d -p 3002:3002 haoict/tns:${CIRCLE_BRANCH}"
+      - run: ssh $SSH_USER@$SSH_HOST "docker image prune -f"
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
