@@ -12,9 +12,9 @@ jobs:
   deploy:
     machine: true
     steps:
-      - run: ssh $SSH_USER@$SSH_HOST "docker kill tns; docker rm tns; docker pull haoict/tns:${CIRCLE_BRANCH}"
-      - run: ssh $SSH_USER@$SSH_HOST "docker run --name tns -d -p 3002:3002 haoict/tns:${CIRCLE_BRANCH}"
-      - run: ssh $SSH_USER@$SSH_HOST "docker image prune -f"
+      - run: ssh $SSH_USER_US@$SSH_HOST_US "docker kill tns; docker rm tns; docker pull haoict/tns:${CIRCLE_BRANCH}"
+      - run: ssh $SSH_USER_US@$SSH_HOST_US "docker run --name tns -d -p 3002:3002 haoict/tns:${CIRCLE_BRANCH}"
+      - run: ssh $SSH_USER_US@$SSH_HOST_US "docker image prune -f"
 
 workflows:
   version: 2
